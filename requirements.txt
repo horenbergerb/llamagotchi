@@ -1,0 +1,7 @@
+faiss==1.5.3
+langchain==0.0.153
+matplotlib==3.5.1
+numpy==1.21.5
+pydantic==1.10.7
+termcolor==2.3.0
+torch==2.0.0

@@ -2,7 +2,13 @@
 
 ## Overview
 
-This is just a bunch of random notebooks where I experiment with LLaMa models and try to use them in more complex pipelines. Here's a quick rundown of the different investigations:
+This is just a bunch of random notebooks where I experiment with LLaMa models and try to use them in more complex pipelines.
+
+This shit has gotten out of hand, and I've got like 5+ different projects stuffed into this repo. I'll probably need to clean it up at some point and break these apart or write better documentation.
+
+I've been trying to make a skeleton of a scifi text adventure game that uses LLaMa for generating certain game elements, so that's a lot of the new bloat. Also wrote a quick and dirty script to integrate LLaMa with Whisper and Bark.
+
+Here are some descriptions for a few of the different scripts:
 
 ### Alpaca-wikipedia-search
 

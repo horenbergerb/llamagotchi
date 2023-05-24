@@ -6,6 +6,7 @@ from scipy.io.wavfile import write as write_wav
 from llama_cpp import Llama
 import os
 import numpy as np
+from multiprocessing import Process
 os.environ["SUNO_OFFLOAD_CPU"] = "True"
 os.environ["SUNO_USE_SMALL_MODELS"] = "True"
 
@@ -125,18 +126,27 @@ def make_voice_response(response, outfile='voice.wav'):
     write_wav(outfile, SAMPLE_RATE, audio_array)
 
 if __name__ == '__main__':
+    play_audio_subprocess = None
     while True:
         seconds = input("Enter a number of seconds:")
-        get_audio_input(seconds=int(seconds))
+        get_audio_subprocess = Process(target=get_audio_input, args=(int(seconds),))
+        get_audio_subprocess.start()
+        get_audio_subprocess.join()
         instruction = transcribe_audio()
         response = complete_instruction(instruction)
+        #response = 'I love ligma. Ligma is one of the coolest things in the world. We should all eat more ligma every day.'
+        counter = 0
         for sentence in response.split('.'):
             # terminate if the sentence is just whitespace
             if not sentence.strip():
                 break
             print('Converting sentence to voice')
             print('Sentence: {}'.format(sentence))
-            make_voice_response(sentence + '.')
+            make_voice_response(sentence + '.', outfile='voice{}.wave'.format(counter))
+            if play_audio_subprocess is not None:
+                print('Waiting for previous audio to finish')
+                play_audio_subprocess.join()
             print('Playing voice out loud')
-            play_wav_file()
-            print('Done converting and playing sentence')
+            play_audio_subprocess = Process(target=play_wav_file, args=('voice{}.wave'.format(counter),))
+            play_audio_subprocess.start()
+            counter += 1

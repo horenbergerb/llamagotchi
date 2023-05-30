@@ -15,7 +15,8 @@ const AudioRecorder = () => {
 
 	const [audioChunks, setAudioChunks] = useState([]);
 
-	const getMicrophonePermission = async () => {
+	const getMicrophonePermission = async (event) => {
+		event.preventDefault();
 		if ("MediaRecorder" in window) {
 			try {
 				const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -32,7 +33,8 @@ const AudioRecorder = () => {
 		}
 	};
 
-	const startRecording = async () => {
+	const startRecording = async (event) => {
+		event.preventDefault();
 		setRecordingStatus("recording");
 		const media = new MediaRecorder(stream, { type: mimeType });
 
@@ -43,6 +45,7 @@ const AudioRecorder = () => {
 		let localAudioChunks = [];
 
 		mediaRecorder.current.ondataavailable = (event) => {
+			event.preventDefault();
 			if (typeof event.data === "undefined") return;
 			if (event.data.size === 0) return;
 			localAudioChunks.push(event.data);
@@ -51,7 +54,8 @@ const AudioRecorder = () => {
 		setAudioChunks(localAudioChunks);
 	};
 
-	const stopRecording = () => {
+	const stopRecording = (event) => {
+		event.preventDefault();
 		setRecordingStatus("inactive");
 		mediaRecorder.current.stop();
 
@@ -68,14 +72,17 @@ const AudioRecorder = () => {
             formData.append("input_audio_file", audioBlob);
 
             // Send the form data to the server.
-            fetch('http://localhost:5000/upload-input-audio', {
+            fetch('http://localhost:5005/upload-input-audio', {
                 method: "POST",
                 cache: "no-cache",
                 body: formData,
                 mode: 'cors'
             }).then(resp => {
                 if (resp.status === 200) {
-                window.location.reload(true);
+					// Reset recording state
+					setAudio(null);
+					setAudioChunks([]);
+					setRecordingStatus("inactive");
                 } else {
                 console.error("Error:", resp)
                 }

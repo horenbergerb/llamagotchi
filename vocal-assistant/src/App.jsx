@@ -11,18 +11,22 @@ const App = () => {
 
     const playAudio = async () => {
         if (audioQueue.length > 0) {
+            console.log("Starting playAudio");
             setIsPlaying(true);
             const audioUrl = audioQueue[0]; // Get the next audio URL without modifying the array
             setAudioQueue(audioQueue.slice(1)); // Use slice to produce a new array without the first element
+            console.log("Frontend playing " + audioUrl);
             const audio = new Audio(audioUrl);
             audio.onended = () => setIsPlaying(false);  // Play the next audio when this one ends
             await audio.play();
+            console.log("Frontend done playing " + audioUrl);
         }
     }
 
     const onAudioReady = (data) => {
         const audioUrl = `http://localhost:5005/download/${data.filename}?cb=` + new Date().getTime();
-        setAudioQueue([...audioQueue, audioUrl]);  // Queue the audio URL
+        setAudioQueue(prevAudioQueue => [...prevAudioQueue, audioUrl]);  // Queue the audio URL
+        console.info("Frontend received " + audioUrl);
     };
 
     useEffect(() => {

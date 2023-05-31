@@ -94,7 +94,6 @@ const AudioRecorder = () => {
 
 	return (
 		<div>
-			<h2>Audio Recorder</h2>
 			<main>
 				<div className="audio-controls">
 					{!permission ? (
@@ -113,14 +112,6 @@ const AudioRecorder = () => {
 						</button>
 					) : null}
 				</div>
-				{audio ? (
-					<div className="audio-player">
-						<audio src={audio} controls></audio>
-						<a download href={audio}>
-							Download Input Audio
-						</a>
-					</div>
-				) : null}
 			</main>
 		</div>
 	);

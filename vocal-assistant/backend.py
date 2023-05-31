@@ -59,6 +59,8 @@ def complete_instruction_kobold(instruction):
             'max_length': 300}
     response = requests.post('http://127.0.0.1:5000/api/v1/generate', json=body)
     print(response.json(), file=sys.stderr)
+    socketio.emit('text.ready', {'text': prompt_template.format(prompt=instruction) + response.json()['results'][0]['text']})
+
     return response.json()['results'][0]['text']
 
 def complete_instruction(instruction):

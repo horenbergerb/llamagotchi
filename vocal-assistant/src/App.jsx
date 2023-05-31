@@ -9,6 +9,8 @@ const App = () => {
     const [audioQueue, setAudioQueue] = useState([]);
     const [isPlaying, setIsPlaying] = useState(false);
 
+    const [text, setText] = useState("");
+
     const playAudio = async () => {
         if (audioQueue.length > 0) {
             console.log("Starting playAudio");
@@ -29,10 +31,20 @@ const App = () => {
         console.info("Frontend received " + audioUrl);
     };
 
+    const onTextReady = (data) => {
+        setText(data.text);  // Assume 'text' is the property containing the text in the data object
+    };
+    
+
     useEffect(() => {
         socket.on('audio.ready', onAudioReady);
         return () => socket.off('audio.ready');
     }, []);
+
+    useEffect(() => {
+        socket.on('text.ready', onTextReady);
+        return () => socket.off('text.ready');
+    }, [text]);  // Add 'text' to the dependency array    
 
     useEffect(() => {
         if (!isPlaying) {
@@ -42,8 +54,9 @@ const App = () => {
 
     return (
         <div>
-            <h1>React Audio Recorder</h1>
+            <h1>Whisper LLaMa Bark</h1>
             <AudioRecorder />
+            <p>{text}</p>
         </div>
     );
 };
